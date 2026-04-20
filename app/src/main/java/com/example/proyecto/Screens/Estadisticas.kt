@@ -63,9 +63,9 @@ fun Estadisticas(navController: NavController){
 
                 NavigationBarItem(
                     selected = true,
-                    onClick = { },
+                    onClick = { navController.navigate(AppScreen.Estadisticas.route)},
                     icon = { Icon(Icons.Default.BarChart, contentDescription = null) },
-                    label = { Text("Stats") }
+                    label = { Text("Estadisticas") }
                 )
 
                 NavigationBarItem(
