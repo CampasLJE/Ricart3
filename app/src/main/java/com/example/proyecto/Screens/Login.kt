@@ -38,7 +38,6 @@ fun Login(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-
                 title = {
                     Text(
                         ""
