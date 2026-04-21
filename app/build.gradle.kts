@@ -60,4 +60,5 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("com.patrykandpatrick.vico:compose:1.13.1")
     implementation("com.patrykandpatrick.vico:compose-m3:1.13.1")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
