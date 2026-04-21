@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.proyecto.Navigation.AppScreen
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -30,7 +31,10 @@ fun Estadisticas(navController: NavController){
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Estadísticas") },
+                title = { Text("Estadísticas",
+                    fontSize = 30.sp,
+                    color = Color.White
+                )},
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF4CAF50)
                 )
@@ -102,7 +106,8 @@ fun Estadisticas(navController: NavController){
                 )
             }
 
-            Text("Ritmo cardiaco")
+            Text("Ritmo cardiaco:",
+                fontSize = 24.sp)
             Chart(
                 chart = lineChart(),
                 chartModelProducer = graficaRitmo,
@@ -124,7 +129,8 @@ fun Estadisticas(navController: NavController){
                 )
             }
 
-            Text("Pasos")
+            Text("Pasos:",
+                fontSize = 24.sp)
             Chart(
                 chart = lineChart(),
                 chartModelProducer = graficaPasos,
@@ -146,7 +152,8 @@ fun Estadisticas(navController: NavController){
                 )
             }
 
-            Text("Calorías")
+            Text("Calorías: ",
+                fontSize = 24.sp)
             Chart(
                 chart = lineChart(),
                 chartModelProducer = graficaCalorias,
@@ -168,7 +175,8 @@ fun Estadisticas(navController: NavController){
                 )
             }
 
-            Text("Estrés")
+            Text("Estrés: ",
+                fontSize = 24.sp)
             Chart(
                 chart = lineChart(),
                 chartModelProducer = graficaEstres,
@@ -189,7 +197,8 @@ fun Estadisticas(navController: NavController){
                 )
             }
 
-            Text("Hidratacion")
+            Text("Hidratacion: ",
+                fontSize = 24.sp)
             Chart(
                 chart = lineChart(),
                 chartModelProducer = graficaAgua,

@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -40,7 +39,9 @@ fun Login(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        ""
+                        "Inicio de sesion",
+                        fontSize = 30.sp,
+                        color = Color.White
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -105,7 +106,11 @@ fun Login(navController: NavController) {
             Button(
                 onClick = {
                     navController.navigate(AppScreen.Lobby.route)
-                }) {
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White ))
+            {
                 Text("Iniciar Sesion")
 
             }
@@ -113,7 +118,11 @@ fun Login(navController: NavController) {
             Button(
                 onClick = {
                     navController.popBackStack()
-                }) {
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White ))
+            {
                 Text("Regresar")
             }
         }

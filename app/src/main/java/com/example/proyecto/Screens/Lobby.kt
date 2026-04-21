@@ -1,9 +1,13 @@
 package com.example.proyecto.Screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,7 +27,11 @@ import androidx.navigation.NavController
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 import com.example.proyecto.Navigation.AppScreen
+import com.example.proyecto.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +42,9 @@ fun Lobby(navController: NavController){
             TopAppBar(
                 title = {
                     Text(
-                        "Home"
+                        "Pagina principal",
+                        fontSize = 30.sp,
+                        color = Color.White
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -89,6 +99,19 @@ fun Lobby(navController: NavController){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.home),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Text("Tus datos:",
+                fontSize = 24.sp)
+
+            Spacer(modifier = Modifier.height(20.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ){

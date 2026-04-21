@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -45,10 +46,15 @@ import com.example.proyecto.Navigation.AppScreen
 fun Hidratacion(navController: NavController){
 
     var vasos by remember { mutableStateOf(0) }
+    val meta = 8
+    val progreso = (vasos / meta.toFloat()).coerceIn(0f, 1f)
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hidratacion") },
+                title = { Text("Hidratacion",
+                    fontSize = 30.sp,
+                    color = Color.White
+                )},
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF4CAF50)
                 )
@@ -102,21 +108,26 @@ fun Hidratacion(navController: NavController){
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
                 .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text("Vasos de agua", fontSize = 24.sp)
+            Text("Vasos de agua", fontSize = 50.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
-
-            Text("$vasos", fontSize = 40.sp)
+            Text("$vasos / $meta", fontSize = 40.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Row {
 
-                Button(onClick = { vasos++ }) {
+                Button(onClick = {
+                    if (vasos < meta) vasos++
+                },
+                    colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White ))
+                {
                     Text("+1 vaso")
                 }
 
@@ -124,13 +135,26 @@ fun Hidratacion(navController: NavController){
 
                 Button(onClick = {
                     if (vasos > 0) vasos--
-                }) {
+                },
+                    colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50),
+                    contentColor = Color.White ))
+                {
                     Text("-1 vaso")
                 }
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text("Progreso diario",
+                fontSize = 24.sp)
+
+            Spacer(modifier = Modifier.height(20.dp))
             LinearProgressIndicator(
-                progress = vasos / 8f, // meta: 8 vasos
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                progress = progreso,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp)
             )
         }
     }
