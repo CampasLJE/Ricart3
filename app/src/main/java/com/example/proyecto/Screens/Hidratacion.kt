@@ -79,14 +79,14 @@ fun Hidratacion(navController: NavController){
                 )
 
                 NavigationBarItem(
-                    selected = false,
+                    selected = true,
                     onClick = { navController.navigate(AppScreen.Hidratacion.route) },
                     icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
                     label = { Text("Agua") }
                 )
 
                 NavigationBarItem(
-                    selected = true,
+                    selected = false,
                     onClick = { navController.navigate(AppScreen.Estadisticas.route) },
                     icon = { Icon(Icons.Default.BarChart, contentDescription = null) },
                     label = { Text("Estadisticas") }
@@ -100,7 +100,6 @@ fun Hidratacion(navController: NavController){
                 )
             }
         }
-
     ) { paddingValues ->
         Column(
             modifier = Modifier

@@ -80,7 +80,6 @@ fun Estadisticas(navController: NavController){
                 )
             }
         }
-
     ) { paddingValues ->
 
         Column(

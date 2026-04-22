@@ -56,14 +56,14 @@ fun Lobby(navController: NavController){
             NavigationBar {
 
                 NavigationBarItem(
-                    selected = false,
+                    selected = true,
                     onClick = { navController.navigate(AppScreen.Lobby.route)},
                     icon = { Icon(Icons.Default.Home, contentDescription = null) },
                     label = { Text("Home") }
                 )
 
                 NavigationBarItem(
-                    selected = true,
+                    selected = false,
                     onClick = { navController.navigate(AppScreen.Nutricion.route)},
                     icon = { Icon(Icons.Default.Restaurant, contentDescription = "Restaurant") },
                     label = { Text("Nutricion") }
@@ -91,7 +91,7 @@ fun Lobby(navController: NavController){
                 )
             }
         }
-    ) { paddingValues ->
+    ){ paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -69,7 +69,7 @@ fun Nutricion(navController: NavController){
                 )
 
                 NavigationBarItem(
-                    selected = false,
+                    selected = true,
                     onClick = { navController.navigate(AppScreen.Nutricion.route)},
                     icon = { Icon(Icons.Default.Restaurant, contentDescription = null) },
                     label = { Text("Nutrición") }
@@ -83,7 +83,7 @@ fun Nutricion(navController: NavController){
                 )
 
                 NavigationBarItem(
-                    selected = true,
+                    selected = false,
                     onClick = { navController.navigate(AppScreen.Estadisticas.route)},
                     icon = { Icon(Icons.Default.BarChart, contentDescription = null) },
                     label = { Text("Estadisticas") }
@@ -97,7 +97,6 @@ fun Nutricion(navController: NavController){
                 )
             }
         }
-
     ) { paddingValues ->
         Column(
             modifier = Modifier

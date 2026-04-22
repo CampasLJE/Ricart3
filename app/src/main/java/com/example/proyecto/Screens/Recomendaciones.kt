@@ -76,21 +76,20 @@ fun Recomendaciones(navController: NavController){
                 )
 
                 NavigationBarItem(
-                    selected = true,
+                    selected = false,
                     onClick = { navController.navigate(AppScreen.Estadisticas.route)},
                     icon = { Icon(Icons.Default.BarChart, contentDescription = null) },
                     label = { Text("Estadisticas") }
                 )
 
                 NavigationBarItem(
-                    selected = false,
+                    selected = true,
                     onClick = { navController.navigate(AppScreen.Recomendaciones.route) },
                     icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     label = { Text("Recomendaciones") }
                 )
             }
         }
-
     ) { paddingValues ->
         Column(
             modifier = Modifier
