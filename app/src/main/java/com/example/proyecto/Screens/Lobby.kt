@@ -1,24 +1,9 @@
 package com.example.proyecto.Screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,11 +17,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
 import com.example.proyecto.Navigation.AppScreen
 import com.example.proyecto.R
+import com.example.proyecto.network.enviarBiometricos
+import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun Lobby(navController: NavController){
+
+    // 🔥 VARIABLES
+    var estado by remember { mutableStateOf("Cargando...") }
+    var ppm by remember { mutableStateOf(75) }
+    var estres by remember { mutableStateOf(30) }
+
+    // 🚀 LLAMADA A API
+    LaunchedEffect(Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val res = enviarBiometricos(ppm, estres)
+
+            withContext(Dispatchers.Main) {
+                estado = res
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,6 +55,7 @@ fun Lobby(navController: NavController){
                 )
             )
         },
+
         bottomBar = {
             NavigationBar {
 
@@ -65,33 +69,35 @@ fun Lobby(navController: NavController){
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(AppScreen.Nutricion.route)},
-                    icon = { Icon(Icons.Default.Restaurant, contentDescription = "Restaurant") },
+                    icon = { Icon(Icons.Default.Restaurant, contentDescription = null) },
                     label = { Text("Nutricion") }
                 )
 
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(AppScreen.Hidratacion.route) },
-                    icon = { Icon(Icons.Default.Favorite, contentDescription = "Agua") },
+                    icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
                     label = { Text("Agua") }
                 )
 
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(AppScreen.Estadisticas.route)},
-                    icon = {Icon( Icons.Default.BarChart, contentDescription = "BarChart")},
+                    icon = {Icon(Icons.Default.BarChart, contentDescription = null)},
                     label = {Text("Estadisticas")}
                 )
 
                 NavigationBarItem(
                     selected = false,
                     onClick = {navController.navigate(AppScreen.Recomendaciones.route) },
-                    icon = { Icon(Icons.Default.Person, contentDescription = "Perfil") },
+                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     label = { Text("Recomendaciones") }
                 )
             }
         }
+
     ){ paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -99,6 +105,7 @@ fun Lobby(navController: NavController){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Image(
                 painter = painterResource(id = R.drawable.home),
                 contentDescription = "Logo",
@@ -107,69 +114,83 @@ fun Lobby(navController: NavController){
                     .height(300.dp),
                 contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text("Tus datos:",
-                fontSize = 24.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
+
+            Text("Tus datos:", fontSize = 24.sp)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // 🔹 FILA 1
+            Row {
                 Card(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp),
                     elevation = CardDefaults.cardElevation(6.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text("Ritmo cardiaco")
-                        Text("75 ppm")
+                        Text("$ppm ppm")
                     }
                 }
+
                 Card(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp),
                     elevation = CardDefaults.cardElevation(6.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text("Pasos")
-                        Text("12.500 Steps")
+                        Text("12,500 Steps")
                     }
                 }
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+
+            // 🔹 FILA 2
+            Row {
                 Card(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp),
                     elevation = CardDefaults.cardElevation(6.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text("Caolorias")
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Calorías")
                         Text("136 Kcal")
                     }
                 }
+
                 Card(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp),
                     elevation = CardDefaults.cardElevation(6.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text("Estres")
-                        Text("12.500 ")
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Estrés")
+                        Text("$estres")
                     }
+                }
+            }
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                elevation = CardDefaults.cardElevation(6.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Estado de salud")
+
+                    Text(
+                        text = estado,
+                        fontSize = 18.sp
+                    )
                 }
             }
         }

@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.proyecto.Navigation.AppScreen
+import com.example.proyecto.network.enviarHidratacion
+import com.example.proyecto.data.DataHolder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +50,7 @@ fun Hidratacion(navController: NavController){
     var vasos by remember { mutableStateOf(0) }
     val meta = 8
     val progreso = (vasos / meta.toFloat()).coerceIn(0f, 1f)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -121,11 +124,19 @@ fun Hidratacion(navController: NavController){
             Row {
 
                 Button(onClick = {
-                    if (vasos < meta) vasos++
+                    if (vasos < meta) {
+                        vasos++
+
+                        // Llamamos a la IA
+                        enviarHidratacion(vasos, meta) { res ->
+                            //Guardamos resultado para otra pantalla
+                            DataHolder.recomendacionHidratacion = res
+                        }
+                    }
                 },
                     colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4CAF50),
-                    contentColor = Color.White ))
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White ))
                 {
                     Text("+1 vaso")
                 }
@@ -133,11 +144,16 @@ fun Hidratacion(navController: NavController){
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Button(onClick = {
-                    if (vasos > 0) vasos--
+                    if (vasos > 0) {
+                        vasos--
+                        enviarHidratacion(vasos, meta) { res ->
+                            DataHolder.recomendacionHidratacion = res
+                        }
+                    }
                 },
                     colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4CAF50),
-                    contentColor = Color.White ))
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White ))
                 {
                     Text("-1 vaso")
                 }
