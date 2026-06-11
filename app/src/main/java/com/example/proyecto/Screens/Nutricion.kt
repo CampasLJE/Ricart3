@@ -1,72 +1,111 @@
 package com.example.proyecto.Screens
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.proyecto.Navigation.AppScreen
-import com.example.proyecto.network.enviarNutricion
 import com.example.proyecto.data.DataHolder
-import kotlinx.coroutines.*
+import com.example.proyecto.network.enviarNutricion
+import com.example.proyecto.sync.WearSyncBridge
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Nutricion(navController: NavController){
+fun Nutricion(navController: NavController) {
+    val context = LocalContext.current
 
     var alimento by remember { mutableStateOf("") }
     var lista by remember { mutableStateOf(listOf<String>()) }
     var totalCalorias by remember { mutableStateOf(0) }
     var totalProteinas by remember { mutableStateOf(0) }
 
+    fun syncWearable(recomendacion: String) {
+        // Sincronizamos los totales con el reloj
+        WearSyncBridge.updateNutrition(
+            context = context,
+            caloriesTotal = totalCalorias,
+            proteinTotal = totalProteinas,
+            nutritionRecommendation = recomendacion
+        )
+    }
+
+    // Si cambian los totales, actualizamos el reloj
+    LaunchedEffect(totalCalorias, totalProteinas) {
+        syncWearable(DataHolder.recomendacionNutricion)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nutrición", fontSize = 30.sp, color = Color.White) },
+                title = { Text("Nutricion", fontSize = 30.sp, color = Color.White) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF4CAF50)
                 )
             )
         },
-
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
                     selected = false,
-                    onClick = { navController.navigate(AppScreen.Lobby.route)},
+                    onClick = { navController.navigate(AppScreen.Lobby.route) },
                     icon = { Icon(Icons.Default.Home, contentDescription = null) },
                     label = { Text("Home") }
                 )
-
                 NavigationBarItem(
                     selected = true,
-                    onClick = { navController.navigate(AppScreen.Nutricion.route)},
+                    onClick = { navController.navigate(AppScreen.Nutricion.route) },
                     icon = { Icon(Icons.Default.Restaurant, contentDescription = null) },
-                    label = { Text("Nutrición") }
+                    label = { Text("Nutricion") }
                 )
-
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(AppScreen.Hidratacion.route) },
                     icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
                     label = { Text("Agua") }
                 )
-
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(AppScreen.Estadisticas.route) },
                     icon = { Icon(Icons.Default.BarChart, contentDescription = null) },
                     label = { Text("Estadisticas") }
                 )
-
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(AppScreen.Recomendaciones.route) },
@@ -76,7 +115,6 @@ fun Nutricion(navController: NavController){
             }
         }
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -86,7 +124,6 @@ fun Nutricion(navController: NavController){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Text("Registro de alimentos", fontSize = 36.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -102,14 +139,13 @@ fun Nutricion(navController: NavController){
             Button(
                 onClick = {
                     if (alimento.isNotEmpty()) {
-
                         lista = lista + alimento
 
                         val partes = alimento.split(" ")
                         val nombre = partes[0].lowercase()
                         val gramos = partes.getOrNull(1)?.toIntOrNull() ?: 100
 
-                        val (calPor100, protPor100) = when(nombre){
+                        val (calPor100, protPor100) = when (nombre) {
                             "pollo" -> Pair(165, 31)
                             "arroz" -> Pair(130, 2)
                             "huevo" -> Pair(155, 13)
@@ -125,8 +161,8 @@ fun Nutricion(navController: NavController){
 
                         val agua = 1000
 
+                        // Pedimos la recomendacion y la mandamos al reloj
                         CoroutineScope(Dispatchers.IO).launch {
-
                             val res = enviarNutricion(
                                 totalCalorias,
                                 2000,
@@ -137,6 +173,7 @@ fun Nutricion(navController: NavController){
                             )
 
                             DataHolder.recomendacionNutricion = res
+                            syncWearable(res)
                         }
 
                         alimento = ""
@@ -153,8 +190,8 @@ fun Nutricion(navController: NavController){
             Spacer(modifier = Modifier.height(20.dp))
 
             Text("Totales:")
-            Text("Calorías: $totalCalorias kcal")
-            Text("Proteínas: $totalProteinas g")
+            Text("Calorias: $totalCalorias kcal")
+            Text("Proteinas: $totalProteinas g")
 
             Spacer(modifier = Modifier.height(30.dp))
 

@@ -13,7 +13,7 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="DefaultPreview">
+      <SelectionState runConfigName="ricart3">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

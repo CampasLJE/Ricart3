@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Proyecto"
 include(":app")
- 
+include(":ricart3")

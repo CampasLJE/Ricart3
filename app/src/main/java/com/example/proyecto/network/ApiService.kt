@@ -11,7 +11,7 @@ fun enviarHidratacion(
 ) {
     Thread {
         try {
-            val url = URL("http://10.0.2.2:5000/hidratacion")
+            val url = URL("http://127.0.0.1:5000/hidratacion")
 
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"

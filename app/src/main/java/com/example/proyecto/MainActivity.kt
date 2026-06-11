@@ -8,6 +8,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.proyecto.Navigation.AppNavigation
+import com.example.proyecto.Navigation.AppNavigation
 import com.example.proyecto.ui.theme.ProyectoTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProyectoTheme {
-                Surface(){
+                Surface {
                     AppNavigation()
                 }
             }

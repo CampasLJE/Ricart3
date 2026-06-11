@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,65 +37,80 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.proyecto.Navigation.AppScreen
-import com.example.proyecto.network.enviarHidratacion
 import com.example.proyecto.data.DataHolder
+import com.example.proyecto.network.enviarHidratacion
+import com.example.proyecto.sync.WearSyncBridge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Hidratacion(navController: NavController){
+fun Hidratacion(navController: NavController) {
+    val context = LocalContext.current
 
     var vasos by remember { mutableStateOf(0) }
     val meta = 8
     val progreso = (vasos / meta.toFloat()).coerceIn(0f, 1f)
 
+    fun syncWearable(recomendacion: String) {
+        // Sincronizamos la hidratacion con el reloj
+        WearSyncBridge.updateHydration(
+            context = context,
+            waterCups = vasos,
+            waterGoal = meta,
+            waterRecommendation = recomendacion
+        )
+    }
+
+    // Si cambia el contador, actualizamos el reloj
+    LaunchedEffect(vasos, meta) {
+        syncWearable(DataHolder.recomendacionHidratacion)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hidratacion",
-                    fontSize = 30.sp,
-                    color = Color.White
-                )},
+                title = {
+                    Text(
+                        "Hidratacion",
+                        fontSize = 30.sp,
+                        color = Color.White
+                    )
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF4CAF50)
                 )
             )
         },
-
         bottomBar = {
             NavigationBar {
-
                 NavigationBarItem(
                     selected = false,
-                    onClick = { navController.navigate(AppScreen.Lobby.route)},
+                    onClick = { navController.navigate(AppScreen.Lobby.route) },
                     icon = { Icon(Icons.Default.Home, contentDescription = null) },
                     label = { Text("Home") }
                 )
-
                 NavigationBarItem(
                     selected = false,
-                    onClick = { navController.navigate(AppScreen.Nutricion.route)},
+                    onClick = { navController.navigate(AppScreen.Nutricion.route) },
                     icon = { Icon(Icons.Default.Restaurant, contentDescription = null) },
-                    label = { Text("Nutrición") }
+                    label = { Text("Nutricion") }
                 )
-
                 NavigationBarItem(
                     selected = true,
                     onClick = { navController.navigate(AppScreen.Hidratacion.route) },
                     icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
                     label = { Text("Agua") }
                 )
-
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(AppScreen.Estadisticas.route) },
                     icon = { Icon(Icons.Default.BarChart, contentDescription = null) },
                     label = { Text("Estadisticas") }
                 )
-
                 NavigationBarItem(
                     selected = false,
                     onClick = { navController.navigate(AppScreen.Recomendaciones.route) },
@@ -113,7 +129,6 @@ fun Hidratacion(navController: NavController){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Text("Vasos de agua", fontSize = 50.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -122,47 +137,50 @@ fun Hidratacion(navController: NavController){
             Spacer(modifier = Modifier.height(20.dp))
 
             Row {
-
-                Button(onClick = {
-                    if (vasos < meta) {
-                        vasos++
-
-                        // Llamamos a la IA
-                        enviarHidratacion(vasos, meta) { res ->
-                            //Guardamos resultado para otra pantalla
-                            DataHolder.recomendacionHidratacion = res
+                Button(
+                    onClick = {
+                        if (vasos < meta) {
+                            vasos++
+                            // Pedimos la recomendacion y la mandamos al reloj
+                            enviarHidratacion(vasos, meta) { res ->
+                                DataHolder.recomendacionHidratacion = res
+                                syncWearable(res)
+                            }
                         }
-                    }
-                },
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF4CAF50),
-                        contentColor = Color.White ))
-                {
+                        contentColor = Color.White
+                    )
+                ) {
                     Text("+1 vaso")
                 }
 
                 Spacer(modifier = Modifier.width(10.dp))
 
-                Button(onClick = {
-                    if (vasos > 0) {
-                        vasos--
-                        enviarHidratacion(vasos, meta) { res ->
-                            DataHolder.recomendacionHidratacion = res
+                Button(
+                    onClick = {
+                        if (vasos > 0) {
+                            vasos--
+                            // Pedimos la recomendacion y la mandamos al reloj
+                            enviarHidratacion(vasos, meta) { res ->
+                                DataHolder.recomendacionHidratacion = res
+                                syncWearable(res)
+                            }
                         }
-                    }
-                },
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF4CAF50),
-                        contentColor = Color.White ))
-                {
+                        contentColor = Color.White
+                    )
+                ) {
                     Text("-1 vaso")
                 }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("Progreso diario",
-                fontSize = 24.sp)
+            Text("Progreso diario", fontSize = 24.sp)
 
             Spacer(modifier = Modifier.height(20.dp))
             LinearProgressIndicator(
